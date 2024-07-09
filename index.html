@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -147,6 +147,7 @@
                 if (patterns.has(currentPattern)) {
                     document.getElementById("message").innerText =
                         "이미 기록된 패턴입니다. 게임에서 패배했습니다.";
+                    document.getElementById("message").style.color = "red";
                     highlightPattern(currentPattern);
                     disableStones();
                 } else {
@@ -156,6 +157,8 @@
                     if (patterns.size === 16) {
                         document.getElementById("message").innerText =
                             "모든 패턴을 성공적으로 기록했습니다. 게임에서 승리했습니다.";
+                        document.getElementById("message").style.color =
+                            "green";
                         disableStones();
                     }
                 }
