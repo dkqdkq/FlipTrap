@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="ko">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>플립트랩 게임</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                min-height: 100vh;
+                background-color: #f0f0f0;
+                overflow: hidden;
+            }
+            #game-container {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+            .stone {
+                width: 100px;
+                height: 100px;
+                display: inline-block;
+                margin: 10px;
+                cursor: pointer;
+                border-radius: 50%;
+            }
+            .white {
+                background-color: white;
+                border: 2px solid black;
+            }
+            .black {
+                background-color: black;
+                border: 2px solid black;
+            }
+            .message {
+                margin-top: 20px;
+                font-size: 24px;
+            }
+            #patterns-container {
+                display: flex;
+                justify-content: center;
+                margin-top: 20px;
+                width: 800px;
+            }
+            #patterns-left,
+            #patterns-right {
+                background-color: white;
+                border: 1px solid #ccc;
+                width: 200px;
+                padding: 10px;
+            }
+            #patterns-left {
+                margin-right: 20px;
+            }
+            .pattern-item {
+                display: flex;
+                justify-content: center;
+                margin-bottom: 5px;
+            }
+            .pattern-stone {
+                width: 20px;
+                height: 20px;
+                margin: 0 2px;
+                border-radius: 50%;
+                border: 1px solid #000;
+            }
+            .pattern-white {
+                background-color: white;
+            }
+            .pattern-black {
+                background-color: black;
+            }
+            .highlight {
+                background-color: yellow;
+            }
+            .pattern-number {
+                margin-right: 10px;
+            }
+            h2 {
+                text-align: center;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="game-container">
+            <div id="game">
+                <div
+                    id="stone0"
+                    class="stone white"
+                    onclick="flipStone(0)"
+                ></div>
+                <div
+                    id="stone1"
+                    class="stone white"
+                    onclick="flipStone(1)"
+                ></div>
+                <div
+                    id="stone2"
+                    class="stone white"
+                    onclick="flipStone(2)"
+                ></div>
+                <div
+                    id="stone3"
+                    class="stone white"
+                    onclick="flipStone(3)"
+                ></div>
+            </div>
+            <div id="patterns-container">
+                <div id="patterns-left">
+                    <h2>패턴 기록</h2>
+                    <div id="pattern-list-left"></div>
+                </div>
+                <div id="patterns-right">
+                    <h2>패턴 기록</h2>
+                    <div id="pattern-list-right"></div>
+                </div>
+            </div>
+        </div>
+        <div id="message" class="message"></div>
+        <!-- make copyright -->
+        <div style="position: fixed; bottom: 10px; right: 10px; color: gray">
+            <p
+                >&copy; 2024. <a href="//github.com/dkqdkq">dkq</a>. All rights
+                reserved.</p
+            >
+        </div>
+        <script>
+            let stones = [0, 0, 0, 0]; // 0은 백색, 1은 흑색을 의미
+            let patterns = new Map();
+            let patternCount = 1;
+
+            function initializeGame() {
+                patterns.set(stones.toString(), patternCount);
+                updatePatternList(stones.toString(), patternCount);
+            }
+
+            function flipStone(index) {
+                stones[index] = 1 - stones[index];
+                updateStones();
+                let currentPattern = stones.toString();
+                if (patterns.has(currentPattern)) {
+                    document.getElementById("message").innerText =
+                        "이미 기록된 패턴입니다. 게임에서 패배했습니다.";
+                    document.getElementById("message").style.color = "red";
+                    highlightPattern(currentPattern);
+                    disableStones();
+                } else {
+                    patternCount++;
+                    patterns.set(currentPattern, patternCount);
+                    updatePatternList(currentPattern, patternCount);
+                    if (patterns.size === 16) {
+                        document.getElementById("message").innerText =
+                            "모든 패턴을 성공적으로 기록했습니다. 게임에서 승리했습니다.";
+                        document.getElementById("message").style.color =
+                            "green";
+                        disableStones();
+                    }
+                }
+            }
+
+            function updateStones() {
+                for (let i = 0; i < stones.length; i++) {
+                    let stone = document.getElementById("stone" + i);
+                    if (stones[i] === 0) {
+                        stone.className = "stone white";
+                    } else {
+                        stone.className = "stone black";
+                    }
+                }
+            }
+
+            function updatePatternList(pattern, count) {
+                let patternList;
+                if (count <= 8) {
+                    patternList = document.getElementById("pattern-list-left");
+                } else {
+                    patternList = document.getElementById("pattern-list-right");
+                }
+
+                let patternItem = document.createElement("div");
+                patternItem.className = "pattern-item";
+                let patternNumber = document.createElement("div");
+                patternNumber.className = "pattern-number";
+                patternNumber.innerText = count;
+                patternItem.appendChild(patternNumber);
+                pattern.split(",").forEach((ch) => {
+                    let stoneDiv = document.createElement("div");
+                    stoneDiv.className =
+                        "pattern-stone " +
+                        (ch === "0" ? "pattern-white" : "pattern-black");
+                    patternItem.appendChild(stoneDiv);
+                });
+                patternList.appendChild(patternItem);
+            }
+
+            function highlightPattern(pattern) {
+                let allPatterns = document.querySelectorAll(".pattern-item");
+                allPatterns.forEach((item) => {
+                    let patternNumber =
+                        item.querySelector(".pattern-number").innerText;
+                    if (patterns.get(pattern) == patternNumber) {
+                        item.classList.add("highlight");
+                    }
+                });
+            }
+
+            function disableStones() {
+                for (let i = 0; i < stones.length; i++) {
+                    document.getElementById("stone" + i).onclick = null;
+                }
+            }
+
+            // 게임 초기화
+            initializeGame();
+        </script>
+    </body>
+</html>
