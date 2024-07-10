@@ -155,8 +155,8 @@
                     patterns.set(currentPattern, patternCount);
                     updatePatternList(currentPattern, patternCount);
                     if (patterns.size === 16) {
-                        document.getElementById("message").innerText =
-                            "모든 패턴을 성공적으로 기록했습니다. 게임에서 승리했습니다.";
+                        document.getElementById("message").innerHTML =
+                            "모든 패턴을 성공적으로 기록했습니다. 게임에서 승리했습니다. <a href='index_v5.html'>5개 버전 하러가기</a>";
                         document.getElementById("message").style.color =
                             "green";
                         disableStones();
