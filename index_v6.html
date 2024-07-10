@@ -21,7 +21,6 @@
                 flex-direction: column;
                 align-items: center;
                 width: 100%;
-                max-width: 600px;
             }
             .stone {
                 width: 80px;
@@ -50,6 +49,7 @@
                 justify-content: center;
                 margin-top: 20px;
                 width: 100%;
+                max-width: 600px;
             }
             #patterns-left,
             #patterns-right {
@@ -166,7 +166,7 @@
                     updatePatternList(currentPattern, patternCount);
                     if (patterns.size === 64) {
                         document.getElementById("message").innerText =
-                            "모든 패턴을 성공적으로 기록했습니다. 게임에서 승리했습니다.";
+                            "축하합니다! 모든 게임에서 승리하셨습니다. 🎉";
                         document.getElementById("message").style.color =
                             "green";
                         disableStones();
